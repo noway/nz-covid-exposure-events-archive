@@ -44,20 +44,15 @@ async function main() {
 
   const items = await getExposureEvents();
 
-  await Promise.all(
-    existingItems.map((item) => {
-      return new Promise((resolve) => stringifier.write(item, "utf8", resolve));
-    })
-  );
-  await Promise.all(
-    items.map((item) => {
-      if (!existingNotificationIds.includes(item.notificationId)) {
-        return new Promise((resolve) =>
-          stringifier.write(item, "utf8", resolve)
-        );
-      }
-    })
-  );
+  for (const item of existingItems) {
+    await new Promise((resolve) => stringifier.write(item, "utf8", resolve));
+  }
+  for (const item of items) {
+    if (existingNotificationIds.includes(item.notificationId)) {
+      continue;
+    }
+    await new Promise((resolve) => stringifier.write(item, "utf8", resolve));
+  }
 
   stringifier.end();
   simpleGit()
