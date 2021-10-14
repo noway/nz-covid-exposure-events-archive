@@ -4,5 +4,16 @@
   "description": "Archive of current exposure events published for NZ COVID Tracer app",
   "main": "index.js",
   "author": "Ilia Sidorenko",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/ndjson": "^2.0.1",
+    "@types/node": "^16.10.9",
+    "from-ndjson": "^1.0.4",
+    "ndjson": "^2.0.0",
+    "node-fetch": "^3.0.0",
+    "pm2": "^5.1.2",
+    "simple-git": "^2.46.0",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4"
+  }
 }
