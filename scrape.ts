@@ -20,6 +20,7 @@ interface Item {
 interface Data {
   items: Item[];
 }
+
 async function getExposureEvents() {
   const res = await fetch(
     "https://exposure-events.tracing.covid19.govt.nz/current-exposure-events.json"
@@ -29,25 +30,27 @@ async function getExposureEvents() {
 }
 
 async function main() {
-  const initialExposureEvents = fromNdjson(
-    readFileSync("exposure-events.ndjson", "utf8")
+  const existingItems: Item[] = fromNdjson(
+    readFileSync("all-exposure-events.ndjson", "utf8")
   );
+  const existingNotificationIds = [
+    ...new Set(existingItems.map((item) => item.notificationId)),
+  ];
+
   const stringifier = ndjson.stringify();
   stringifier.pipe(createWriteStream("all-exposure-events.ndjson"));
   stringifier.pipe(process.stdout);
 
-  const exposureEvents = await getExposureEvents();
+  const items = await getExposureEvents();
 
-  const notificationIds = [
-    ...new Set(exposureEvents.map((event) => event.notificationId)),
-  ];
-  const eventIds = [...new Set(exposureEvents.map((event) => event.eventId))];
-  const glnHashs = [...new Set(exposureEvents.map((event) => event.glnHash))];
-
-  console.log("notificationIds.length", notificationIds.length);
-  console.log("eventIds.length", eventIds.length);
-  console.log("glnHashs.length", glnHashs.length);
-  console.log("exposureEvents.length", exposureEvents.length);
+  existingItems.forEach((item) => {
+    stringifier.write(item);
+  });
+  items.forEach((item) => {
+    if (!existingNotificationIds.includes(item.notificationId)) {
+      stringifier.write(item);
+    }
+  });
 
   stringifier.end();
 }
