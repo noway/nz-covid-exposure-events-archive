@@ -31,6 +31,7 @@ async function getExposureEvents() {
 }
 
 async function main() {
+  // read existing items
   const existingItems: Item[] = fromNdjson(
     readFileSync("all-exposure-events.ndjson", "utf8")
   );
@@ -38,12 +39,13 @@ async function main() {
     ...new Set(existingItems.map((item) => item.notificationId)),
   ];
 
+  // fetch current items
+  const items = await getExposureEvents();
+
+  // rewrite data store
   const stringifier = ndjson.stringify();
   stringifier.pipe(createWriteStream("all-exposure-events.ndjson"));
   stringifier.pipe(process.stdout);
-
-  const items = await getExposureEvents();
-
   for (const item of existingItems) {
     await new Promise((resolve) => stringifier.write(item, "utf8", resolve));
   }
@@ -53,8 +55,9 @@ async function main() {
     }
     await new Promise((resolve) => stringifier.write(item, "utf8", resolve));
   }
-
   stringifier.end();
+
+  // push to git
   simpleGit()
     .add("./*")
     .commit(
