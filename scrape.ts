@@ -38,6 +38,15 @@ async function main() {
 
   const exposureEvents = await getExposureEvents();
 
+  const notificationIds = [
+    ...new Set(exposureEvents.map((event) => event.notificationId)),
+  ];
+  const eventIds = [...new Set(exposureEvents.map((event) => event.eventId))];
+  const glnHashs = [...new Set(exposureEvents.map((event) => event.glnHash))];
+
+  console.log("notificationIds.length", notificationIds.length);
+  console.log("eventIds.length", eventIds.length);
+  console.log("glnHashs.length", glnHashs.length);
   console.log("exposureEvents.length", exposureEvents.length);
 
   stringifier.end();
