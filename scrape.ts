@@ -54,15 +54,16 @@ async function main() {
   });
 
   stringifier.end();
-
-  simpleGit()
-    .add("./*")
-    .commit(
-      `update data from ${new Date().toLocaleString("en-nz", {
-        timeZone: "Pacific/Auckland",
-      })}`
-    )
-    .push(["-u", "origin", "main"], () => console.log("pushed"));
+  stringifier._flush(() => {
+    simpleGit()
+      .add("./*")
+      .commit(
+        `update data from ${new Date().toLocaleString("en-nz", {
+          timeZone: "Pacific/Auckland",
+        })}`
+      )
+      .push(["-u", "origin", "main"], () => console.log("pushed"));
+  });
 }
 
 main();
