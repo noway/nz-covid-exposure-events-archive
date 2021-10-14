@@ -2,6 +2,7 @@ import fromNdjson from "from-ndjson";
 import fetch from "node-fetch";
 import { createWriteStream, readFileSync } from "node:fs";
 import ndjson from "ndjson";
+import simpleGit from "simple-git";
 
 interface Item {
   eventId: string;
@@ -53,6 +54,15 @@ async function main() {
   });
 
   stringifier.end();
+
+  simpleGit()
+    .add("./*")
+    .commit(
+      `update data from ${new Date().toLocaleString("en-nz", {
+        timeZone: "Pacific/Auckland",
+      })}`
+    )
+    .push(["-u", "origin", "main"], () => console.log("pushed"));
 }
 
 main();
