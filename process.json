@@ -1,0 +1,10 @@
+{
+    "apps": [
+        {
+            "name": "nz-covid-exposure-events-archive",
+            "script": "yarn scrape",
+            "restart_delay": 600000,
+            "time": true
+        }
+    ]
+}
