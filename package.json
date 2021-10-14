@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Ilia Sidorenko",
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "scrape": "node --loader ts-node/esm --no-warnings scrape.ts"
+  },
   "dependencies": {
     "@types/ndjson": "^2.0.1",
     "@types/node": "^16.10.9",
