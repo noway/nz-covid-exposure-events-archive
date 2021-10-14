@@ -44,26 +44,30 @@ async function main() {
 
   const items = await getExposureEvents();
 
-  existingItems.forEach((item) => {
-    stringifier.write(item);
-  });
-  items.forEach((item) => {
-    if (!existingNotificationIds.includes(item.notificationId)) {
-      stringifier.write(item);
-    }
-  });
+  await Promise.all(
+    existingItems.map((item) => {
+      return new Promise((resolve) => stringifier.write(item, "utf8", resolve));
+    })
+  );
+  await Promise.all(
+    items.map((item) => {
+      if (!existingNotificationIds.includes(item.notificationId)) {
+        return new Promise((resolve) =>
+          stringifier.write(item, "utf8", resolve)
+        );
+      }
+    })
+  );
 
   stringifier.end();
-  stringifier._flush(() => {
-    simpleGit()
-      .add("./*")
-      .commit(
-        `update data from ${new Date().toLocaleString("en-nz", {
-          timeZone: "Pacific/Auckland",
-        })}`
-      )
-      .push(["-u", "origin", "main"], () => console.log("pushed"));
-  });
+  simpleGit()
+    .add("./*")
+    .commit(
+      `update data from ${new Date().toLocaleString("en-nz", {
+        timeZone: "Pacific/Auckland",
+      })}`
+    )
+    .push(["-u", "origin", "main"], () => console.log("pushed"));
 }
 
 main();
