@@ -1,0 +1,8 @@
+{
+  "name": "nz-covid-exposure-events-archive",
+  "version": "1.0.0",
+  "description": "Archive of current exposure events published for NZ COVID Tracer app",
+  "main": "index.js",
+  "author": "Ilia Sidorenko",
+  "license": "MIT"
+}
