@@ -55,17 +55,18 @@ async function main() {
     }
     await new Promise((resolve) => stringifier.write(item, "utf8", resolve));
   }
-  stringifier.end();
-
-  // push to git
-  simpleGit()
-    .add("./*")
-    .commit(
-      `update data from ${new Date().toLocaleString("en-nz", {
-        timeZone: "Pacific/Auckland",
-      })}`
-    )
-    .push(["-u", "origin", "main"], () => console.log("pushed"));
+  stringifier.end(() => {
+    // push to git
+    simpleGit()
+      .pull()
+      .add("./*")
+      .commit(
+        `update data from ${new Date().toLocaleString("en-nz", {
+          timeZone: "Pacific/Auckland",
+        })}`
+      )
+      .push(["-u", "origin", "main"], () => console.log("pushed"));
+  });
 }
 
 main();
